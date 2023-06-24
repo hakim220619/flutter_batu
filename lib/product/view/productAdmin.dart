@@ -45,88 +45,108 @@ class _ListProductAdminState extends State<ListProductAdmin> {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-        child: RefreshIndicator(
-            onRefresh: barang,
-            child: SafeArea(
-              child: Padding(
-                padding:
-                    const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-                child: ListView.builder(
-                  itemCount: _get.length,
-                  itemBuilder: (context, index) {
-                    return Padding(
-                      padding: const EdgeInsets.only(top: 8.0),
-                      child: Card(
-                        child: Padding(
-                          padding: const EdgeInsets.all(16.0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Column(
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: Scaffold(
+        appBar: AppBar(
+          title: Text("Product"),
+        ),
+        body: Center(
+            child: RefreshIndicator(
+                onRefresh: barang,
+                child: SafeArea(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 8.0, horizontal: 16.0),
+                    child: ListView.builder(
+                      itemCount: _get.length,
+                      itemBuilder: (context, index) {
+                        return Padding(
+                          padding: const EdgeInsets.only(top: 8.0),
+                          child: Card(
+                            child: Padding(
+                              padding: const EdgeInsets.all(16.0),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: <Widget>[
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
                                     children: [
-                                      Text(
-                                        _get[index]['nama_barang'].toString(),
-                                        // style: Theme.of(context).textTheme.title,
+                                      Column(
+                                        children: [
+                                          Text(
+                                            _get[index]['nama_barang']
+                                                .toString(),
+                                            // style: Theme.of(context).textTheme.title,
+                                          ),
+                                          Text(_get[index]['harga'].toString()),
+                                          Text(_get[index]['keterangan']
+                                              .toString()),
+                                        ],
                                       ),
-                                      Text(_get[index]['harga'].toString()),
-                                      Text(
-                                          _get[index]['keterangan'].toString()),
+                                      Container(
+                                        alignment: Alignment.topRight,
+                                        margin: EdgeInsets.only(top: 10),
+                                        child: Image.network(
+                                          'https://batu.dlhcode.com/upload/produk/${_get[index]['gambar']}',
+                                          width: 80,
+                                          height: 80,
+                                          fit: BoxFit.fill,
+                                        ),
+                                      ),
                                     ],
                                   ),
-                                  Container(
-                                    alignment: Alignment.topRight,
-                                    margin: EdgeInsets.only(top: 10),
-                                    child: Image.network(
-                                      'https://batu.dlhcode.com/upload/produk/${_get[index]['gambar']}',
-                                      width: 80,
-                                      height: 80,
-                                      fit: BoxFit.fill,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                children: <Widget>[
-                                  ElevatedButton(
-                                    onPressed: () {
-                                      // TODO: do something in here
-                                    },
-                                    child: Text(
-                                      "Delete",
-                                      style: TextStyle(color: Colors.red),
-                                    ),
-                                  ),
-                                  ElevatedButton(
-                                    onPressed: () {
-                                      Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    children: <Widget>[
+                                      ElevatedButton(
+                                        onPressed: () {
+                                          // TODO: do something in here
+                                        },
+                                        child: Text(
+                                          "Delete",
+                                          style: TextStyle(
+                                              color: Color.fromARGB(
+                                                  255, 255, 255, 255)),
+                                        ),
+                                      ),
+                                      ElevatedButton(
+                                        onPressed: () {
+                                          Navigator.push(
                                             context,
-                                          ) =>
-                                                  EditProductAdmin()));
-                                    },
-                                    child: Text(
-                                      "Edit",
-                                      style: TextStyle(color: Colors.blue),
-                                    ),
+                                            MaterialPageRoute(
+                                              builder: (context) =>
+                                                  EditProductAdmin(
+                                                id: _get[index]['id'],
+                                                nama_barang: _get[index]['nama_barang'],
+                                                harga: _get[index]['harga'],
+                                                keterangan: _get[index]['keterangan'],
+                                                gambar: _get[index]['gambar'],
+                                              ),
+                                            ),
+                                            
+                                          );
+                                        },
+                                        child: Text(
+                                          "Edit",
+                                          style: TextStyle(
+                                              color: Color.fromARGB(
+                                                  255, 255, 255, 255)),
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ],
                               ),
-                            ],
+                            ),
                           ),
-                        ),
-                      ),
-                    );
-                  },
-                ),
-              ),
-            )));
+                        );
+                      },
+                    ),
+                  ),
+                ))),
+      ),
+    );
   }
 }

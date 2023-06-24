@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_batu/home/menu_page.dart';
-import 'package:flutter_batu/home/view/menuAdmin.dart';
+import 'package:flutter_batu/home/menuAdmin.dart';
 import 'package:flutter_batu/login/view/login.dart';
 import 'package:flutter_batu/product/view/listProduct.dart';
 import 'package:http/http.dart' as http;
@@ -105,7 +105,15 @@ class _HomePageAdminState extends State<HomePageAdmin> {
         ],
         centerTitle: true,
       ),
-      body: MenuAdmin(),
+      body: Column(
+          children: <Widget>[
+            Spacer(),
+            Barang(),
+            Transaksi(),
+            OutlinedCardExample(),
+            Spacer(),
+          ],
+        ),
 
     );
   }

@@ -16,15 +16,7 @@ class _MenuAdminState extends State<MenuAdmin> {
       theme: ThemeData(
           colorSchemeSeed: const Color(0xff6750a4), useMaterial3: true),
       home: Scaffold(
-        body: const Column(
-          children: <Widget>[
-            Spacer(),
-            Barang(),
-            Transaksi(),
-            OutlinedCardExample(),
-            Spacer(),
-          ],
-        ),
+        
       ),
     );
   }
@@ -44,11 +36,13 @@ class Barang extends StatelessWidget {
     return Center(
       child: InkWell(
         onTap: () {
-          Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (context) => ListProductAdmin(),
-                        ),
-                      );
+          Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (
+                      context,
+                    ) =>
+                            ListProductAdmin()));
         },
         child: Card(
           child: SizedBox(
