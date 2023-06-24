@@ -50,6 +50,7 @@ class _ListProductState extends State<ListProduct> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      
       body: Center(
         child: RefreshIndicator(
           onRefresh: barang,
@@ -77,7 +78,7 @@ class _ListProductState extends State<ListProduct> {
                                   ) =>
                                           DetailProduct(
                                             id: _get[i]['id'],
-                                            nama_barang: _get[i]['nama_barang'],                                            
+                                            nama_barang: _get[i]['nama_barang'],
                                             harga: _get[i]['harga'],
                                             keterangan: _get[i]['keterangan'],
                                             gambar: _get[i]['gambar'],
@@ -89,6 +90,7 @@ class _ListProductState extends State<ListProduct> {
                                 Expanded(
                                   child: Image.network(
                                     'https://batu.dlhcode.com/upload/produk/${_get[i]['gambar']}',
+                                    
                                     fit: BoxFit.fill,
                                   ),
                                 ),
