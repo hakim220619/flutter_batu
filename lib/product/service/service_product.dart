@@ -64,7 +64,7 @@ class ServiceProduct {
 
     http.Response response = await http.post(_pesanUrl, headers: {
       "Accept": "application/json",
-      "Authorization": "Bearer ${token.toString()}" ,
+      "Authorization": "Bearer ${token.toString()}",
     }, body: {
       "id_barang": id.toString(),
       "id_user": id_user.toString(),
@@ -81,5 +81,29 @@ class ServiceProduct {
         MaterialPageRoute(builder: (context) => transaksiPage()),
       );
     }
+  }
+
+  static UpdateProduct(
+      id, nama_barang, harga, keterangan, gambar, context) async {
+    print(gambar);
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    var token = preferences.getString('token');
+    var url = Uri.parse('http://batu.dlhcode.com//api/update-barang/${id}');
+
+    final response = await http.MultipartRequest('POST', url,  );
+    response.files.add(
+    await http.MultipartFile.fromPath(
+      'jpg',
+      gambar
+    )
+  );
+  var res = await response.send();
+    print(res);
+    // if (response.statusCode == 200) {
+    //   List jsonResponse = json.decode(response.body);
+    //   return jsonResponse.map((data) => Data.fromJson(data)).toList();
+    // } else {
+    //   throw Exception('Unexpected error occured!');
+    // }
   }
 }
