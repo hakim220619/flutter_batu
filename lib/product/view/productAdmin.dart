@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_batu/product/view/productEdit.dart';
+import 'package:flutter_batu/product/view/tambah_produk_view.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:async';
 // ignore: duplicate_import
@@ -9,11 +10,13 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class ListProductAdmin extends StatefulWidget {
+  const ListProductAdmin({super.key});
+
   @override
-  _ListProductAdminState createState() => _ListProductAdminState();
+  ListProductAdminState createState() => ListProductAdminState();
 }
 
-class _ListProductAdminState extends State<ListProductAdmin> {
+class ListProductAdminState extends State<ListProductAdmin> {
   List _get = [];
   Future barang() async {
     try {
@@ -38,6 +41,7 @@ class _ListProductAdminState extends State<ListProductAdmin> {
     }
   }
 
+  @override
   void initState() {
     super.initState();
     barang();
@@ -45,101 +49,109 @@ class _ListProductAdminState extends State<ListProductAdmin> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: Scaffold(
+    return Scaffold(
         appBar: AppBar(
-          title: Text("Product"),
+          title: const Text("Product"),
         ),
         body: Center(
-            child: RefreshIndicator(
-                onRefresh: barang,
-                child: SafeArea(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 8.0, horizontal: 16.0),
-                    child: ListView.builder(
-                      itemCount: _get.length,
-                      itemBuilder: (context, index) {
-                        return Padding(
-                          padding: const EdgeInsets.only(top: 8.0),
-                          child: Card(
-                            child: Padding(
-                              padding: const EdgeInsets.all(16.0),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: <Widget>[
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
+          child: RefreshIndicator(
+            onRefresh: barang,
+            child: SafeArea(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                    vertical: 8.0, horizontal: 16.0),
+                child: ListView.builder(
+                  itemCount: _get.length,
+                  itemBuilder: (context, index) {
+                    return Padding(
+                      padding: const EdgeInsets.only(top: 8.0),
+                      child: Card(
+                        child: Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Column(
                                     children: [
-                                      Column(
-                                        children: [
-                                          Text(
-                                            _get[index]['nama_barang']
-                                                .toString(),
-                                            // style: Theme.of(context).textTheme.title,
-                                          ),
-                                          Text(_get[index]['harga'].toString()),
-                                          Text(_get[index]['keterangan']
-                                              .toString()),
-                                        ],
+                                      Text(
+                                        _get[index]['nama_barang']
+                                            .toString(),
+                                        // style: Theme.of(context).textTheme.title,
                                       ),
-                                      Container(
-                                        alignment: Alignment.topRight,
-                                        margin: EdgeInsets.only(top: 10),
-                                        child: Image.network(
-                                          'https://batu.dlhcode.com/upload/produk/${_get[index]['gambar']}',
-                                          width: 80,
-                                          height: 80,
-                                          fit: BoxFit.fill,
-                                        ),
-                                      ),
+                                      Text(_get[index]['harga'].toString()),
+                                      Text(_get[index]['keterangan']
+                                          .toString()),
                                     ],
                                   ),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.end,
-                                    children: <Widget>[
-                                      ElevatedButton(
-                                        onPressed: () {
-                                          // TODO: do something in here
-                                        },
-                                        child: Text(
-                                          "Delete",
-                                          style: TextStyle(
-                                              color: Color.fromARGB(
-                                                  255, 255, 255, 255)),
-                                        ),
-                                      ),
-                                      ElevatedButton(
-                                        onPressed: () {
-                                          Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                              builder: (context) =>
-                                                 ImageUpload()
-                                            ),
-                                            
-                                          );
-                                        },
-                                        child: Text(
-                                          "Edit",
-                                          style: TextStyle(
-                                              color: Color.fromARGB(
-                                                  255, 255, 255, 255)),
-                                        ),
-                                      ),
-                                    ],
+                                  Container(
+                                    alignment: Alignment.topRight,
+                                    margin: EdgeInsets.only(top: 10),
+                                    child: Image.network(
+                                      'https://batu.dlhcode.com/upload/produk/${_get[index]['gambar']}',
+                                      width: 80,
+                                      height: 80,
+                                      fit: BoxFit.fill,
+                                    ),
                                   ),
                                 ],
                               ),
-                            ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: <Widget>[
+                                  ElevatedButton(
+                                    onPressed: () {
+                                      // TODO: do something in here
+                                    },
+                                    child: Text(
+                                      "Delete",
+                                      style: TextStyle(
+                                          color: Color.fromARGB(
+                                              255, 255, 255, 255)),
+                                    ),
+                                  ),
+                                  ElevatedButton(
+                                    onPressed: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) =>
+                                             ImageUpload()
+                                        ),
+                                        
+                                      );
+                                    },
+                                    child: Text(
+                                      "Edit",
+                                      style: TextStyle(
+                                          color: Color.fromARGB(
+                                              255, 255, 255, 255)),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
                           ),
-                        );
-                      },
-                    ),
-                  ),
-                ))),
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ),
+            )
+        )
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.push(
+            context, 
+            MaterialPageRoute(builder: (_) => const TambahProdukView())
+          );
+        },
+        child: const Icon(Icons.add),
       ),
     );
   }

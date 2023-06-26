@@ -83,27 +83,23 @@ class ServiceProduct {
     }
   }
 
-  static UpdateProduct(
-      id, nama_barang, harga, keterangan, gambar, context) async {
-    print(gambar);
+  Future<void> addProduct(namaBarang, harga, keterangan, gambar) async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     var token = preferences.getString('token');
-    var url = Uri.parse('http://batu.dlhcode.com//api/update-barang/${id}');
+    var url = Uri.parse('http://batu.dlhcode.com/api/add-barang');
+    var request = http.MultipartRequest("POST", url);
+    final imagePath = await http.MultipartFile.fromPath('gambar', gambar);
+    request.fields['nama_barang'] = namaBarang;
+    request.fields['harga'] = harga;
+    request.fields['keterangan'] = keterangan;
+    request.files.add(imagePath);
 
-    final response = await http.MultipartRequest('POST', url,  );
-    response.files.add(
-    await http.MultipartFile.fromPath(
-      'jpg',
-      gambar
-    )
-  );
-  var res = await response.send();
-    print(res);
-    // if (response.statusCode == 200) {
-    //   List jsonResponse = json.decode(response.body);
-    //   return jsonResponse.map((data) => Data.fromJson(data)).toList();
-    // } else {
-    //   throw Exception('Unexpected error occured!');
-    // }
+    request.headers['Authorization'] = 'Bearer $token';
+    request.headers['Accept'] = 'application/json';
+
+    final response = await request.send();
+    var responseData = await response.stream.toBytes();
+    var responseString = String.fromCharCodes(responseData);
+    print(responseString);
   }
 }
