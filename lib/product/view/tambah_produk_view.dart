@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_batu/product/service/service_product.dart';
+import 'package:flutter_batu/product/view/productAdmin.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -90,7 +91,10 @@ class _TambahProdukViewState extends State<TambahProdukView> {
                     hargaEditingController.text, 
                     keteranganEditingController.text, 
                     imagePath
-                  ).whenComplete(() => Navigator.pop(context));
+                  ).whenComplete(() => Navigator.push(
+            context, 
+            MaterialPageRoute(builder: (_) => const ListProductAdmin())
+          ));
                   Fluttertoast.showToast(msg: 'Berhasil menambahkan data');
                 }
               }, 
