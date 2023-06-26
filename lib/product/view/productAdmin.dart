@@ -117,13 +117,7 @@ class _ListProductAdminState extends State<ListProductAdmin> {
                                             context,
                                             MaterialPageRoute(
                                               builder: (context) =>
-                                                  EditProductAdmin(
-                                                id: _get[index]['id'],
-                                                nama_barang: _get[index]['nama_barang'],
-                                                harga: _get[index]['harga'],
-                                                keterangan: _get[index]['keterangan'],
-                                                gambar: _get[index]['gambar'],
-                                              ),
+                                                 ImageUpload()
                                             ),
                                             
                                           );
