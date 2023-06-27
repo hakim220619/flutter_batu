@@ -1,121 +1,215 @@
-import 'dart:convert';
 import 'dart:io';
+
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
+import 'package:flutter_batu/product/service/service_product.dart';
+import 'package:flutter_batu/product/view/productAdmin.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:http/http.dart' as http;
-class ImageUpload extends StatefulWidget{
+
+class EditProductView extends StatefulWidget {
+  final String id;
+  final String nama_barang;
+  final String harga;
+  final String keterangan;
+  final String gbr;
+ 
+  const EditProductView(
+      {super.key,
+      required this.id,
+      required this.nama_barang,
+      required this.harga,
+      required this.keterangan,
+      required this.gbr,
+    });
+
   @override
-  State<StatefulWidget> createState() {
-    return _ImageUpload();
-  }
+  State<EditProductView> createState() => _EditProductViewState();
 }
 
-class _ImageUpload extends State<ImageUpload>{
+class _EditProductViewState extends State<EditProductView> {
+  late TextEditingController namaBarangEditingController;
+  late TextEditingController hargaEditingController;
+  late TextEditingController keteranganEditingController;
 
-  File? uploadimage; //variable for choosed file
+  String? imagePath;
 
-  Future<void> chooseImage() async {
-    final ImagePicker _picker = ImagePicker();
-        var choosedimage = await _picker.pickImage(source: ImageSource.gallery);
-        //set source: ImageSource.camera to get image from camera
-        setState(() {
-            uploadimage = choosedimage as File;
-        });
+  final _formKey = GlobalKey<FormState>();
+
+  @override
+  void initState() {
+    namaBarangEditingController =
+        TextEditingController(text: widget.nama_barang);
+    hargaEditingController = TextEditingController(text: widget.harga);
+    keteranganEditingController =
+        TextEditingController(text: widget.keterangan);
+    super.initState();
   }
 
-  Future<void> uploadImage() async {
-     //show your own loading or progressing code here
-
-      var uploadurl = Uri.parse("batu.dlhcode.com/api/add-barang");
-     //dont use http://localhost , because emulator don't get that address
-     //insted use your local IP address or use live URL
-     //hit "ipconfig" in windows or "ip a" in linux to get you local IP
-
-    try{
-      List<int> imageBytes = uploadimage!.readAsBytesSync();
-      String baseimage = base64Encode(imageBytes);
-      //convert file image to Base64 encoding
-      var response = await http.post(
-              uploadurl, 
-              body: {
-                 'gambar': baseimage,
-              }
-      );
-      if(response.statusCode == 200){
-         var jsondata = json.decode(response.body); //decode json data
-         if(jsondata["error"]){ //check error sent from server
-             print(jsondata["msg"]);
-             //if error return from server, show message from server
-         }else{
-             print("Upload successful");
-         }
-      }else{
-        print("Error during connection to server");
-        //there is error during connecting to server,
-        //status code might be 404 = url not found
-      }
-    }catch(e){
-       print("Error during converting to Base64");
-       //there is error during converting file image to base64 encoding. 
-    }
+  @override
+  void dispose() {
+    namaBarangEditingController.dispose();
+    hargaEditingController.dispose();
+    keteranganEditingController.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-         appBar: AppBar(
-           title: Text("Upload Image to Server"),
-           backgroundColor: Colors.deepOrangeAccent,
-         ),
-         body:Container(
-             height:300,
-             alignment: Alignment.center,
-             child:Column(
-                    mainAxisAlignment: MainAxisAlignment.center, //content alignment to center 
-                    children: <Widget>[
-                        Container(  //show image here after choosing image
-                            child:uploadimage == null? 
-                               Container(): //if uploadimage is null then show empty container
-                               Container(   //elese show image here
-                                  child: SizedBox( 
-                                     height:150,
-                                     child:Image.file(uploadimage!) //load image from file
-                                  )
-                               )
-                        ),
-
-                        Container( 
-                            //show upload button after choosing image
-                          child:uploadimage == null? 
-                               Container(): //if uploadimage is null then show empty container
-                               Container(   //elese show uplaod button
-                                  child:ElevatedButton.icon(
-                                    onPressed: (){
-                                        uploadImage();
-                                        //start uploading image
-                                    }, 
-                                    icon: Icon(Icons.file_upload), 
-                                    label: Text("UPLOAD IMAGE"),
-                                   
-                                    //set brghtness to dark, because deepOrangeAccent is darker coler
-                                    //so that its text color is light
-                                  )
-                               ) 
-                        ),
-
-                        Container(
-                          child: ElevatedButton.icon(
-                            onPressed: (){
-                                chooseImage(); // call choose image function
-                            },
-                            icon:Icon(Icons.folder_open),
-                            label: Text("CHOOSE IMAGE"),
-                           
-                          ),
-                        )
-              ],),
+        appBar: AppBar(
+          leading: IconButton(
+          icon: Icon(Icons.arrow_back,
+              color: const Color.fromARGB(255, 255, 255, 255)),
+          onPressed: () => Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(
+                  builder: (BuildContext context) => ListProductAdmin()),
+              (Route<dynamic> route) => false),
+        ),
+          title: const Text('Edit produk'),
+        ),
+        body: Form(
+          key: _formKey,
+          child: ListView(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 18),
+            children: [
+              CustomTextField(
+                controller: namaBarangEditingController,
+                label: 'nama barang',
+              ),
+              const SizedBox(
+                height: 8,
+              ),
+              CustomTextField(
+                controller: hargaEditingController,
+                label: 'harga barang',
+                keyboardType: TextInputType.number,
+              ),
+              const SizedBox(
+                height: 8,
+              ),
+              CustomTextField(
+                controller: keteranganEditingController,
+                label: 'keteranagan',
+                maxLine: 4,
+              ),
+              const SizedBox(
+                height: 8,
+              ),
+              containerImageWidget(context),
+              const SizedBox(
+                height: 8,
+              ),
+              ElevatedButton(
+                  onPressed: () async {
+                    if (_formKey.currentState!.validate()) {
+                      showDialog(
+                          context: context,
+                          builder: (_) {
+                            return const AlertDialog(
+                              content: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  CircularProgressIndicator.adaptive(),
+                                  SizedBox(
+                                    height: 8,
+                                  ),
+                                  Text('Loading')
+                                ],
+                              ),
+                            );
+                          });
+                      await ServiceProduct()
+                          .editProduct(
+                              widget.id,
+                              namaBarangEditingController.text,
+                              hargaEditingController.text,
+                              keteranganEditingController.text,
+                              imagePath)
+                          .whenComplete(() => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (_) => const ListProductAdmin())));
+                                  
+                      Fluttertoast.showToast(msg: 'Berhasil menambahkan data');
+                    }
+                  },
+                  child: const Text('Simpan data'))
+            ],
           ),
+        ));
+  }
+
+  Widget containerImageWidget(BuildContext context) {
+    return GestureDetector(
+      onTap: () async {
+        final path = await chooseImage();
+        setState(() {
+          imagePath = path;
+          // print(imagePath);
+        });
+      },
+      child: Container(
+        width: MediaQuery.of(context).size.width,
+        height: 200,
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+          border: Border.all(
+            color: Colors.black.withOpacity(.40)
+          ),
+          borderRadius: BorderRadius.circular(4),
+          image: imagePath != null ?
+            DecorationImage(
+              image: FileImage(File(imagePath!)),
+              fit: BoxFit.cover
+            ) : DecorationImage(
+      image: NetworkImage('https://batu.dlhcode.com/upload/produk/${widget.gbr}'),
+      fit: BoxFit.fill,
+    ),
+        ),
+        child: Visibility(
+          visible: imagePath == null ? true : false,
+          child: const Text('Pilih gambar')
+        ),)
+    );
+  }
+}
+
+Future<String?> chooseImage() async {
+  final ImagePicker picker = ImagePicker();
+  final image = await picker.pickImage(source: ImageSource.gallery);
+  return image!.path;
+}
+
+class CustomTextField extends StatelessWidget {
+  const CustomTextField(
+      {super.key,
+      required this.controller,
+      required this.label,
+      this.keyboardType = TextInputType.text,
+      this.maxLine = 1});
+
+  final TextEditingController controller;
+  final String label;
+  final TextInputType keyboardType;
+  final int maxLine;
+
+  @override
+  Widget build(BuildContext context) {
+    return TextFormField(
+      controller: controller,
+      validator: (value) {
+        if (value == null || value.isEmpty) {
+          return 'Form tidak boleh kosong';
+        }
+        return null;
+      },
+      keyboardType: keyboardType,
+      decoration: InputDecoration(
+        labelText: label,
+        border: const OutlineInputBorder(),
+      ),
+      maxLines: maxLine,
     );
   }
 }

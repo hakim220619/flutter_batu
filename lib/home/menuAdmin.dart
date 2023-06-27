@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_batu/product/view/productAdmin.dart';
+import 'package:flutter_batu/product/view/transaksiAdmin.dart';
 
 class MenuAdmin extends StatefulWidget {
   const MenuAdmin({super.key});
@@ -68,13 +69,22 @@ class Transaksi extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: Card(
-        elevation: 0,
-        color: Theme.of(context).colorScheme.surfaceVariant,
-        child: const SizedBox(
-          width: 300,
-          height: 100,
-          child: Center(child: Text('Transaksi')),
+      child: InkWell(
+        onTap: () {
+          Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (
+                      context,
+                    ) =>
+                            ListTransaksiAdmin()));
+        },
+        child: Card(
+          child: SizedBox(
+            width: 300,
+            height: 100,
+            child: Center(child: Text('Transaksi')),
+          ),
         ),
       ),
     );
