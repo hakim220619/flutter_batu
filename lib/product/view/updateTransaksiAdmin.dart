@@ -30,28 +30,60 @@ class UpdateTransaksiAdmin extends StatefulWidget {
 }
 
 class _UpdateTransaksiAdminState extends State<UpdateTransaksiAdmin> {
+  TextEditingController barang_in = TextEditingController();
+  final _timeC = TextEditingController();
+  final _formkey = GlobalKey<FormState>();
+  // TextEditingController Email = TextEditingController();
+  // TextEditingController Nohp = TextEditingController();
+  @override
+  void dispose() {
+    _formkey.currentState?.dispose();
+    super.dispose();
+  }
+
+  var barang_;
+
+  ///Date
+  DateTime selected = DateTime.now();
+  DateTime initial = DateTime(2000);
+  DateTime last = DateTime(2025);
+
+  ///Time
+  TimeOfDay timeOfDay = TimeOfDay.now();
   @override
   Widget build(BuildContext context) {
+    Future displayTimePicker(BuildContext context) async {
+      var time = await showTimePicker(context: context, initialTime: timeOfDay);
+
+      if (time != null) {
+        setState(() {
+          _timeC.text = "${time.hour}:${time.minute}";
+        });
+      }
+    }
+
     return Scaffold(
-        appBar: AppBar(
-          title: Text("Pembayaran"),
-          leading: InkWell(
-            onTap: () {
-              Navigator.pop(
-                context,
-                MaterialPageRoute(
-                  builder: (BuildContext context) => const transaksiPage(),
-                ),
-              );
-            },
-            child: Icon(
-              Icons.arrow_back_ios,
-              color: Color.fromARGB(253, 255, 252, 252),
-            ),
+      appBar: AppBar(
+        title: Text("Pembayaran"),
+        leading: InkWell(
+          onTap: () {
+            Navigator.pop(
+              context,
+              MaterialPageRoute(
+                builder: (BuildContext context) => const transaksiPage(),
+              ),
+            );
+          },
+          child: Icon(
+            Icons.arrow_back_ios,
+            color: Color.fromARGB(253, 255, 252, 252),
           ),
         ),
-        body: Container(
-          padding: EdgeInsets.all(20),
+      ),
+      body: Container(
+        padding: EdgeInsets.all(20),
+        child: Form(
+          key: _formkey,
           child: Column(
             children: [
               const SizedBox(height: 20),
@@ -131,7 +163,36 @@ class _UpdateTransaksiAdminState extends State<UpdateTransaksiAdmin> {
                   ),
                 ),
               ),
-              
+              GestureDetector(
+                  child: Card(
+                color: Colors.white,
+                margin: EdgeInsets.symmetric(vertical: 10, horizontal: 25),
+                child: TextFormField(
+                  controller: _timeC,
+                  onTap: () => displayTimePicker(context),
+                  onChanged: (value) {
+                    setState(() {
+                      barang_ = value;
+                    });
+                  },
+                  decoration: InputDecoration(
+                      fillColor: Colors.grey.shade100,
+                      filled: true,
+                      hintText: '00:00:00',
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10)),
+                      labelText: "Barang Out"),
+                  validator: (value) {
+                    if (value!.isEmpty) {
+                      return "tidak boleh kosong";
+                    }
+                    return null;
+                  },
+                ),
+              )),
+              SizedBox(
+                height: 10.0,
+              ),
               Container(
                 height: 100,
                 width: double.infinity,
@@ -140,7 +201,7 @@ class _UpdateTransaksiAdminState extends State<UpdateTransaksiAdmin> {
                     child: ElevatedButton(
                   child: Text("Kirim Pesanan"),
                   onPressed: () async {
-                    // print(widget.id);
+                    // print(_timeC.text);
                     SharedPreferences preferences =
                         await SharedPreferences.getInstance();
 
@@ -154,8 +215,9 @@ class _UpdateTransaksiAdminState extends State<UpdateTransaksiAdmin> {
                       "Authorization": "Bearer " + token.toString(),
                     }, body: {
                       "id": widget.id.toString(),
+                      "barang_out": _timeC.text
                     });
-                    print(response.body);
+                    print(response.statusCode);
                     if (response.statusCode == 200) {
                       Navigator.pushAndRemoveUntil(
                           context,
@@ -169,6 +231,8 @@ class _UpdateTransaksiAdminState extends State<UpdateTransaksiAdmin> {
               ),
             ],
           ),
-        ));
+        ),
+      ),
+    );
   }
 }
